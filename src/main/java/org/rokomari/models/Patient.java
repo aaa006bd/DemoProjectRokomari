@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Abdullah Al Amin on 7/24/2018.
@@ -17,7 +19,6 @@ import javax.persistence.*;
 @Entity
 @Table(name = "patient")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-
 public class Patient {
 
     @Id
@@ -44,4 +45,25 @@ public class Patient {
     @Column(name = "symptom_summary")
     @JsonProperty("symptom_summary")
     private String symptomSummary;
+
+
+    @ManyToMany(mappedBy = "patients")
+    @Getter@Setter
+    private Set<Doctor> doctors = new HashSet<>();
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Patient patient = (Patient) o;
+
+        return getId() == patient.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return getId();
+    }
 }
