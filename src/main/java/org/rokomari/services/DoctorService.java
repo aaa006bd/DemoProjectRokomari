@@ -24,10 +24,19 @@ public class DoctorService {
     }
 
     public Doctor getADoctorById(int id){
-        return repository.getOne(id);
+        return repository.getOne(id) == null?null:repository.getOne(id);
     }
 
     public List<Doctor> getAllDoctors(){
         return repository.findAll();
+    }
+
+    public boolean updateDoctor(Doctor newDocRecord){
+        // If the record contains the id value it will replace the old records with the new record in the id position
+        return insertDoctor(newDocRecord);
+    }
+
+    public void deleteDoctor(Doctor doctor){
+         repository.delete(doctor);
     }
 }

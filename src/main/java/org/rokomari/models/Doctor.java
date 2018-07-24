@@ -21,6 +21,7 @@ public class Doctor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Getter@Setter
     private int id;
 
     @Getter@Setter
