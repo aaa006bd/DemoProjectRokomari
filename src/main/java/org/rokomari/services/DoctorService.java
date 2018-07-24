@@ -17,14 +17,11 @@ public class DoctorService {
     DoctorRepository repository;
 
     public boolean insertDoctor(Doctor doctor){
-        if (repository.save(doctor) != null)
-            return true;
-        else
-            return false;
+        return repository.save(doctor) != null ? true: false;
     }
 
     public Doctor getADoctorById(int id){
-        return repository.getOne(id) == null?null:repository.getOne(id);
+        return repository.getOne(id);
     }
 
     public List<Doctor> getAllDoctors(){

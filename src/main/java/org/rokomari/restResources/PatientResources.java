@@ -1,7 +1,9 @@
 package org.rokomari.restResources;
 
 import org.rokomari.models.Doctor;
+import org.rokomari.models.Patient;
 import org.rokomari.services.DoctorService;
+import org.rokomari.services.PatientService;
 import org.rokomari.statusCustom.StatusMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,23 +15,21 @@ import java.net.URI;
 import java.util.List;
 
 /**
- * Created by Abdullah Al Amin on 7/22/2018.
+ * Created by Abdullah Al Amin on 7/24/2018.
  */
-
 @RestController
-public class DoctorResources {
-
+public class PatientResources {
     @Autowired
-    private DoctorService service;
+    private PatientService service;
 
-    @PostMapping("api/insert/doctor/new")
-    public ResponseEntity<StatusMessage> insertDoctor(@RequestBody Doctor doctor){
+    @PostMapping("api/insert/patient/new")
+    public ResponseEntity<StatusMessage> insertPatient(@RequestBody Patient patient){
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(doctor.getId()).toUri();
+                .buildAndExpand(patient.getId()).toUri();
 
-        if(service.insertDoctor(doctor)){
+        if(service.insertPatient(patient)){
             return ResponseEntity
                     .created(location)
                     .body(new StatusMessage("success"));
@@ -41,28 +41,29 @@ public class DoctorResources {
 
     }
 
-    @GetMapping(value = "api/doctors", headers = "doctor_id")
-    public@ResponseBody Doctor getADoctor(@RequestHeader("doctor_id") int docId){
-        return service.getADoctorById(docId);
+    @GetMapping(value = "api/patients", headers = "patient_id")
+    public@ResponseBody
+    Patient getAPatient(@RequestHeader("patient_id") int patId){
+        return service.getAPatientById(patId);
     }
 
-    @GetMapping(value ="api/doctors")
-    public List<Doctor> getAllDoctors(){
-        return service.getAllDoctors();
+    @GetMapping(value ="api/patients")
+    public List<Patient> getAllDoctors(){
+        return service.getAllPatients();
     }
 
-    @PutMapping("/api/update/doctors")
-    public ResponseEntity<StatusMessage> updateDoctor(@RequestBody Doctor newDocRec,
-                                                      @RequestHeader("doctor_id") int docId){
+    @PutMapping("/api/update/patients")
+    public ResponseEntity<StatusMessage> updatePatient(@RequestBody Patient newPatRec,
+                                                      @RequestHeader("patient_id") int patId){
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(newDocRec.getId()).toUri();
+                .buildAndExpand(newPatRec.getId()).toUri();
 
         try {
-            if(service.getADoctorById(docId) != null){// this line will throw exception
-                newDocRec.setId(docId);
-                service.updateDoctor(newDocRec);
+            if(service.getAPatientById(patId) != null){// this line will throw exception
+                newPatRec.setId(patId);
+                service.updatePatient(newPatRec);
             }
             return ResponseEntity
                     .created(location)
@@ -75,11 +76,11 @@ public class DoctorResources {
         }
     }
 
-    @DeleteMapping("/api/delete/doctors")
-    public ResponseEntity<StatusMessage> deleteDoctor(@RequestHeader("doctor_id") int docId){
+    @DeleteMapping("/api/delete/patients")
+    public ResponseEntity<StatusMessage> deletePatient(@RequestHeader("patient_id") int patId){
         try {
-            Doctor docRecord = service.getADoctorById(docId);
-            service.deleteDoctor(docRecord);
+            Patient patRecord = service.getAPatientById(patId);
+            service.deletePatient(patRecord);
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(new StatusMessage("deleted"));
@@ -91,6 +92,4 @@ public class DoctorResources {
 
 
     }
-
-
 }
