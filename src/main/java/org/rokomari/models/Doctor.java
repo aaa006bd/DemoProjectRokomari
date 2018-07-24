@@ -1,6 +1,7 @@
 package org.rokomari.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
@@ -40,11 +41,12 @@ public class Doctor {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate dateOfJoining;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "doctor_patient" ,
                joinColumns = @JoinColumn(name = "doctor_id"),
                 inverseJoinColumns = @JoinColumn(name = "patient_id"))
     @Getter@Setter
+    @JsonIgnore
     private Set<Patient> patients = new HashSet<>();
 
     @Override

@@ -1,6 +1,7 @@
 package org.rokomari.restResources;
 
 import org.rokomari.models.Doctor;
+import org.rokomari.models.Patient;
 import org.rokomari.services.DoctorService;
 import org.rokomari.statusCustom.StatusMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Abdullah Al Amin on 7/22/2018.
@@ -51,6 +53,12 @@ public class DoctorResources {
         return service.getAllDoctors();
     }
 
+    @GetMapping("api/doctors/{docId}/patients")
+    public Set<Patient> getAllPatientUnderDoctor(@PathVariable("docId") int docId){
+        Doctor doctor = service.getADoctorById(docId);
+        return doctor.getPatients();
+    }
+
     @PutMapping("/api/update/doctors")
     public ResponseEntity<StatusMessage> updateDoctor(@RequestBody Doctor newDocRec,
                                                       @RequestHeader("doctor_id") int docId){
@@ -62,6 +70,7 @@ public class DoctorResources {
         try {
             if(service.getADoctorById(docId) != null){// this line will throw exception
                 newDocRec.setId(docId);
+                newDocRec.setPatients(service.getADoctorById(docId).getPatients());
                 service.updateDoctor(newDocRec);
             }
             return ResponseEntity
