@@ -24,12 +24,12 @@ public class Appointment {
     private int id;
 
     @Getter@Setter
-    @OneToOne
+    @OneToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
 
     @Getter@Setter
-    @OneToOne
+    @OneToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "patient_id")
     private Patient patient;
 

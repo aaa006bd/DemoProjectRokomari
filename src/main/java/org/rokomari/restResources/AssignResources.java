@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -93,6 +94,40 @@ public class AssignResources {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new StatusMessage("could not find doctor or patient record"));
+        }
+    }
+
+    @GetMapping("api/appointment/patient/{id}")
+    public List<Appointment> getAppointment(@PathVariable("id")int id){
+        return appointmentService.findByPatient(patientService.getAPatientById(id));
+    }
+
+    @DeleteMapping("api/appointment/delete/patient/{id}")
+    public ResponseEntity<StatusMessage> cancelAppointmentByPatient(@PathVariable("id") int id){
+        try {
+            Patient patient = patientService.getAPatientById(id);
+            appointmentService.cancelAppointmentByPatient(patient);
+
+            return ResponseEntity
+                    .ok(new StatusMessage("appointment cancelled by patient: "+patient.getName()));
+        }catch (Exception e){
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new StatusMessage("could not find the appointment or patient"));
+        }
+    }
+    @DeleteMapping("api/appointment/delete/doctor/{id}")
+    public ResponseEntity<StatusMessage> cancelAppointmentByDoctor(@PathVariable("id") int id){
+        try {
+            Doctor doctor = doctorService.getADoctorById(id);
+            appointmentService.cancelAppointmentByDoctor(doctor);
+
+            return ResponseEntity
+                    .ok(new StatusMessage("appointment cancelled by doctor: "+doctor.getName()));
+        }catch (Exception e){
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new StatusMessage("could not find the appointment or doctor"));
         }
     }
 }
