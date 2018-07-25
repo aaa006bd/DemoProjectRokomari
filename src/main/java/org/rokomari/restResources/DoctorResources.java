@@ -53,11 +53,7 @@ public class DoctorResources {
         return service.getAllDoctors();
     }
 
-    @GetMapping("api/doctors/{docId}/patients")
-    public Set<Patient> getAllPatientUnderDoctor(@PathVariable("docId") int docId){
-        Doctor doctor = service.getADoctorById(docId);
-        return doctor.getPatients();
-    }
+
 
     @PutMapping("/api/update/doctors")
     public ResponseEntity<StatusMessage> updateDoctor(@RequestBody Doctor newDocRec,

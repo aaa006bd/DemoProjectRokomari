@@ -1,14 +1,21 @@
 package org.rokomari.restResources;
 
+import org.rokomari.models.Appointment;
 import org.rokomari.models.Doctor;
 import org.rokomari.models.Patient;
 import org.rokomari.repositories.PatientRepository;
+import org.rokomari.services.AppointmentService;
 import org.rokomari.services.DoctorService;
 import org.rokomari.services.PatientService;
+import org.rokomari.statusCustom.StatusMessage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.util.Set;
 
 /**
  * Created by Abdullah Al Amin on 7/24/2018.
@@ -22,21 +29,70 @@ public class AssignResources {
     @Autowired
     DoctorService doctorService;
 
+    @Autowired
+    AppointmentService appointmentService;
+
     @PostMapping("/api" +
             "/doctor/{docId}/patient/{patId}")
-    public void assignDoctor(@PathVariable("docId") int docId,
-                             @PathVariable("patId") int patId){
-        Patient patient = patientService.getAPatientById(patId);
+    public ResponseEntity<StatusMessage> assignDoctor(@PathVariable("docId") int docId,
+                                                      @PathVariable("patId") int patId){
+        try{
+
+            Patient patient = patientService.getAPatientById(patId);
+            Doctor doctor = doctorService.getADoctorById(docId);
+
+            patient.getDoctors().add(doctor);
+            doctor.getPatients().add(patient);
+
+            patient.setId(patId);
+            doctor.setId(docId);
+
+            patientService.updatePatient(patient);
+            doctorService.updateDoctor(doctor);
+
+            return ResponseEntity
+                    .ok()
+                    .body(new StatusMessage(String.format("Doctor %s has been assigned to patient %s"
+                            ,doctor.getName(),patient.getName())));
+        }catch (Exception e){
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new StatusMessage("could not find doctor or patient record"));
+        }
+
+    }
+
+    @GetMapping("api/doctors/{docId}/patients")
+    public Set<Patient> getAllPatientUnderDoctor(@PathVariable("docId") int docId){
         Doctor doctor = doctorService.getADoctorById(docId);
+        return doctor.getPatients();
+    }
 
-        patient.getDoctors().add(doctor);
-        doctor.getPatients().add(patient);
+    @PostMapping("api/appointment/doctor/patient/{appointment_time}")
+    public ResponseEntity<StatusMessage> makeAnAppointment(@RequestHeader("doctor_id")int docId,
+                                                           @RequestHeader("patient_id")int patId,
+                                                           @PathVariable("appointment_time")
+                                                               @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss") LocalDateTime time){
+        try{
 
-        patient.setId(patId);
-        doctor.setId(docId);
+            Patient patient = patientService.getAPatientById(patId);
+            Doctor doctor = doctorService.getADoctorById(docId);
 
-        patientService.updatePatient(patient);
-        doctorService.updateDoctor(doctor);
+            Appointment appointment = new Appointment();
+            appointment.setDoctor(doctor);
+            appointment.setPatient(patient);
+            appointment.setAppointment(time);
 
+            appointmentService.insertAppointmentRecord(appointment);
+
+            return ResponseEntity
+                    .ok()
+                    .body(new StatusMessage(String.format("Doctor %s has been assigned to patient %s"
+                            ,doctor.getName(),patient.getName())));
+        }catch (Exception e){
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new StatusMessage("could not find doctor or patient record"));
+        }
     }
 }
