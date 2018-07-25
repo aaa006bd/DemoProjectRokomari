@@ -22,7 +22,8 @@ public class AssignResources {
     @Autowired
     DoctorService doctorService;
 
-    @PostMapping("/api/doctor/{docId}/patient/{patId}")
+    @PostMapping("/api" +
+            "/doctor/{docId}/patient/{patId}")
     public void assignDoctor(@PathVariable("docId") int docId,
                              @PathVariable("patId") int patId){
         Patient patient = patientService.getAPatientById(patId);
