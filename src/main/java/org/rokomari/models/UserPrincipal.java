@@ -28,10 +28,10 @@ public class UserPrincipal implements UserDetails {
     private String lastName;
 
     @Getter@Setter
-    private String email;
+    private String username;
 
     @Getter@Setter
-    private String username;
+    private String email;
 
     @Getter@Setter
     private String mobile;
@@ -51,8 +51,8 @@ public class UserPrincipal implements UserDetails {
                 user.getId(),
                 user.getFirstName(),
                 user.getLastName(),
-                user.getEmail(),
                 user.getUsername(),
+                user.getEmail(),
                 user.getMobile(),
                 user.getPassword(),
                 authorities
@@ -81,7 +81,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
