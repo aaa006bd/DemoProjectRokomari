@@ -7,6 +7,7 @@ import org.rokomari.statusCustom.StatusMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -24,6 +25,7 @@ public class DoctorResources {
     @Autowired
     private DoctorService service;
 
+    @Secured("ROLE_USER")
     @PostMapping("api/insert/doctor/new")
     public ResponseEntity<StatusMessage> insertDoctor(@RequestBody Doctor doctor){
         URI location = ServletUriComponentsBuilder

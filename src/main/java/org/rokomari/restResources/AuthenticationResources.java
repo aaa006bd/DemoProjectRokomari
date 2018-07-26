@@ -27,7 +27,7 @@ import java.util.Collections;
  * Created by Abdullah Al Amin on 7/26/2018.
  */
 @RestController
-public class UserResources {
+public class AuthenticationResources {
 
     @Autowired
     AuthenticationManager authenticationManager;
@@ -59,7 +59,7 @@ public class UserResources {
         String jwt = tokenProvider.generateToken(authentication);
 
         return ResponseEntity
-                .ok(new StatusMessage(jwt));
+                .ok(new StatusMessage("Bearer "+jwt));
 
     }
 

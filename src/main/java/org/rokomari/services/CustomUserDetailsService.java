@@ -31,6 +31,7 @@ public class CustomUserDetailsService implements UserDetailsService{
 
     }
 
+    @Transactional
     //we will use this method inside JwtAuthenticationFilter
     public UserDetails loadUserById(int id){
         User user = repository.findById(id).orElseThrow(

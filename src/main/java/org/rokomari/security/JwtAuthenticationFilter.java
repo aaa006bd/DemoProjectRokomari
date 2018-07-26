@@ -1,7 +1,6 @@
-package org.rokomari.services;
+package org.rokomari.security;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import org.rokomari.security.JwtTokenProvider;
+import org.rokomari.services.CustomUserDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +33,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
     protected void doFilterInternal(HttpServletRequest httpServletRequest,
                                     HttpServletResponse httpServletResponse,
                                     FilterChain filterChain) throws ServletException, IOException {
-
         try {
             String jwt = getJwtFromRequest(httpServletRequest);
 
@@ -43,21 +41,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 
                 UserDetails details = customUserDetailsService.loadUserById(userId);
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                                                                            details,null,details.getAuthorities());
+                        details,null,details.getAuthorities());
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
 
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
         }catch (Exception e){
-            log.error("could not set user to the security context");
+            log.error("could not set user to the security context",e);
         }
 
         filterChain.doFilter(httpServletRequest,httpServletResponse);
-
     }
 
     private String getJwtFromRequest(HttpServletRequest httpServletRequest) {
-        String bearerToken = httpServletRequest.getHeader("jwt_token");
+        String bearerToken = httpServletRequest.getHeader("Authentication");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer "))
             return bearerToken.substring(7,bearerToken.length());
 
