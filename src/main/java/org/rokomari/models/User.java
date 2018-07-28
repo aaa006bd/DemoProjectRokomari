@@ -1,5 +1,7 @@
 package org.rokomari.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,6 +24,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Getter@Setter
+    @JsonIgnore
     private int id;
 
     @Getter@Setter
@@ -31,10 +34,12 @@ public class User {
 
     @Getter@Setter
     @Column(name = "last_name")
+    @JsonProperty("last_name")
     private String lastName;
 
     @Getter@Setter
-    @JsonProperty("last_name")
+    @JsonIgnore
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String username;
 
     @Getter@Setter
@@ -52,6 +57,7 @@ public class User {
     @JoinTable(name = "user_roles",
                 joinColumns = @JoinColumn(name="user_id"),
                 inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Set<Role> roles = new HashSet<>();
 
 

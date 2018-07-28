@@ -1,4 +1,4 @@
-package org.rokomari.statusCustom;
+package org.rokomari.customPayloadsAndMessages;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

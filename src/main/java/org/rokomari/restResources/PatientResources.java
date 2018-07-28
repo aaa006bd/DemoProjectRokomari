@@ -1,10 +1,8 @@
 package org.rokomari.restResources;
 
-import org.rokomari.models.Doctor;
 import org.rokomari.models.Patient;
-import org.rokomari.services.DoctorService;
 import org.rokomari.services.PatientService;
-import org.rokomari.statusCustom.StatusMessage;
+import org.rokomari.customPayloadsAndMessages.StatusMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

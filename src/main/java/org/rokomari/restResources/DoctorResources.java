@@ -1,9 +1,8 @@
 package org.rokomari.restResources;
 
 import org.rokomari.models.Doctor;
-import org.rokomari.models.Patient;
 import org.rokomari.services.DoctorService;
-import org.rokomari.statusCustom.StatusMessage;
+import org.rokomari.customPayloadsAndMessages.StatusMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +12,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by Abdullah Al Amin on 7/22/2018.

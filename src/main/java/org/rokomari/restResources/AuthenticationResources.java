@@ -1,27 +1,32 @@
 package org.rokomari.restResources;
 
+import org.rokomari.customPayloadsAndMessages.LoginResponse;
+import org.rokomari.customPayloadsAndMessages.RegisterResponse;
 import org.rokomari.exceptions.AppException;
-import org.rokomari.models.LoginRequest;
+import org.rokomari.customPayloadsAndMessages.LoginRequest;
 import org.rokomari.models.Role;
 import org.rokomari.models.RoleName;
 import org.rokomari.models.User;
 import org.rokomari.repositories.RoleRepository;
 import org.rokomari.repositories.UserRepository;
 import org.rokomari.security.JwtTokenProvider;
-import org.rokomari.statusCustom.StatusMessage;
+import org.rokomari.customPayloadsAndMessages.StatusMessage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by Abdullah Al Amin on 7/26/2018.
@@ -45,7 +50,7 @@ public class AuthenticationResources {
     JwtTokenProvider tokenProvider;
 
     @PostMapping("/login")
-    public ResponseEntity<StatusMessage> loginUser(@RequestBody LoginRequest loginRequest){
+    public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest loginRequest){
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -58,17 +63,31 @@ public class AuthenticationResources {
 
         String jwt = tokenProvider.generateToken(authentication);
 
+        User user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(
+                ()-> new UsernameNotFoundException("user with given email doesnot exists")
+        );
+        HttpHeaders header = new HttpHeaders();
+        header.add("jwt_token","Bearer "+jwt);
+        LoginResponse response = new LoginResponse();
+        response.setStatus("logged_in");
+        response.setFirstName(user.getFirstName());
+        response.setEmail(user.getEmail());
+
         return ResponseEntity
-                .ok(new StatusMessage("Bearer "+jwt));
+                .ok()
+                .headers(header)
+                .body(response);
 
     }
 
     @PostMapping("/register")
-    public ResponseEntity<StatusMessage> registerAUser(@RequestBody User user){
+    public ResponseEntity<RegisterResponse> registerAUser(@RequestBody User user){
         if(userRepository.existsByEmail(user.getEmail())){
+            RegisterResponse registerResponse = new RegisterResponse();
+            registerResponse.setStatus("email alreay taken");
             return ResponseEntity
                     .badRequest()
-                    .body(new StatusMessage("Email already taken"));
+                    .body(registerResponse);
 
         }
 
@@ -84,7 +103,15 @@ public class AuthenticationResources {
         User inserted = userRepository.save(user);
 
         return ResponseEntity
-                .ok(new StatusMessage("user create successfully"));
+                .ok(new RegisterResponse(
+                        inserted.getFirstName(),inserted.getLastName(),
+                        inserted.getEmail(),inserted.getMobile(),"success"
+                ));
+    }
+
+    @GetMapping("/users")
+    public List<User> getAllUsers(){
+        return userRepository.findAll();
     }
 
 }

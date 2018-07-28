@@ -1,4 +1,4 @@
-package org.rokomari.models;
+package org.rokomari.customPayloadsAndMessages;
 
 import lombok.Getter;
 import lombok.Setter;
