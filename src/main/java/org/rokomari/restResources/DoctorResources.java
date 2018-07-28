@@ -23,7 +23,7 @@ public class DoctorResources {
     @Autowired
     private DoctorService service;
 
-    @Secured("ROLE_USER")
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PostMapping("api/insert/doctor/new")
     public ResponseEntity<StatusMessage> insertDoctor(@RequestBody Doctor doctor){
         URI location = ServletUriComponentsBuilder
@@ -55,6 +55,7 @@ public class DoctorResources {
 
 
 
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PutMapping("/api/update/doctors")
     public ResponseEntity<StatusMessage> updateDoctor(@RequestBody Doctor newDocRec,
                                                       @RequestHeader("doctor_id") int docId){
@@ -80,6 +81,7 @@ public class DoctorResources {
         }
     }
 
+    @Secured("ROLE_ADMIN")
     @DeleteMapping("/api/delete/doctors")
     public ResponseEntity<StatusMessage> deleteDoctor(@RequestHeader("doctor_id") int docId){
         try {

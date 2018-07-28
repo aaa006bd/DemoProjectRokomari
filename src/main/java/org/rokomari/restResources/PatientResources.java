@@ -6,6 +6,7 @@ import org.rokomari.customPayloadsAndMessages.StatusMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -20,6 +21,7 @@ public class PatientResources {
     @Autowired
     private PatientService service;
 
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PostMapping("api/insert/patient/new")
     public ResponseEntity<StatusMessage> insertPatient(@RequestBody Patient patient){
         URI location = ServletUriComponentsBuilder
@@ -50,6 +52,7 @@ public class PatientResources {
         return service.getAllPatients();
     }
 
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PutMapping("/api/update/patients")
     public ResponseEntity<StatusMessage> updatePatient(@RequestBody Patient newPatRec,
                                                       @RequestHeader("patient_id") int patId){
@@ -74,6 +77,7 @@ public class PatientResources {
         }
     }
 
+    @Secured("ROLE_ADMIN")
     @DeleteMapping("/api/delete/patients")
     public ResponseEntity<StatusMessage> deletePatient(@RequestHeader("patient_id") int patId){
         try {

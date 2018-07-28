@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -34,6 +35,7 @@ public class AssignResources {
 
     @PostMapping("/api" +
             "/doctor/{docId}/patient/{patId}")
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     public ResponseEntity<StatusMessage> assignDoctor(@PathVariable("docId") int docId,
                                                       @PathVariable("patId") int patId){
         try{
@@ -74,6 +76,7 @@ public class AssignResources {
         return patient.getDoctors();
     }
 
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PostMapping("api/appointment/doctor/patient/{appointment_time}")
     public ResponseEntity<StatusMessage> makeAnAppointment(@RequestHeader("doctor_id")int docId,
                                                            @RequestHeader("patient_id")int patId,
@@ -102,6 +105,7 @@ public class AssignResources {
         }
     }
 
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PostMapping("api/appointment/update/patient/{appointment_time}")
     public ResponseEntity<StatusMessage> UpdateAppointment(@RequestHeader("doctor_id")int docId,
                                                            @RequestHeader("patient_id")int patId,
@@ -134,6 +138,7 @@ public class AssignResources {
 
 
 
+    @Secured("ROLE_ADMIN")
     @DeleteMapping("api/appointment/delete/patient/{id}")
     public ResponseEntity<StatusMessage> cancelAppointmentByPatient(@PathVariable("id") int id){
         try {
@@ -148,6 +153,7 @@ public class AssignResources {
                     .body(new StatusMessage("could not find the appointment or patient"));
         }
     }
+    @Secured("ROLE_ADMIN")
     @DeleteMapping("api/appointment/delete/doctor/{id}")
     public ResponseEntity<StatusMessage> cancelAppointmentByDoctor(@PathVariable("id") int id){
         try {
