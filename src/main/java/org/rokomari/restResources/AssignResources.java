@@ -15,6 +15,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
 
@@ -106,24 +107,27 @@ public class AssignResources {
     }
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
-    @PostMapping("api/appointment/update/patient/{appointment_time}")
+    @PutMapping("api/appointment/update/{appointment_time}")
     public ResponseEntity<StatusMessage> UpdateAppointment(@RequestHeader("doctor_id")int docId,
                                                            @RequestHeader("patient_id")int patId,
                                                            @PathVariable("appointment_time")
-                                                           @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss") LocalDateTime updatedTime){
+                                                           String updatedTime){
         try{
 
             Patient patient = patientService.getAPatientById(patId);
             Doctor doctor = doctorService.getADoctorById(docId);
 
+            DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+            LocalDateTime time = LocalDateTime.parse(updatedTime,format);
 
-            appointmentService.updateAppointment(doctor, patient, updatedTime);
+
+            appointmentService.updateAppointment(doctor, patient, time);
 
 
             return ResponseEntity
                     .ok()
                     .body(new StatusMessage("time has been updated. new Appointment time: "
-                            +updatedTime.toLocalDate()+" "+updatedTime.toLocalTime()));
+                            +time.toLocalDate()+" "+time.toLocalTime()));
         }catch (Exception e){
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
