@@ -33,7 +33,6 @@ public class Patient {
     private String name;
 
     @Getter@Setter
-    @NotBlank
     private int age;
 
     @Getter@Setter
@@ -50,7 +49,6 @@ public class Patient {
     @Getter@Setter
     @Column(name = "symptom_summary")
     @JsonProperty("symptom_summary")
-    @NotBlank
     private String symptomSummary;
 
 

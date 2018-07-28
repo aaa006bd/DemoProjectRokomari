@@ -14,7 +14,9 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
 
     Appointment findAppointmentByPatientAndDoctor(Patient p,Doctor d);
     List<Appointment>findAppointmentsByPatient(Patient p);
-    List<Appointment> findAppointmenstByDoctor(Doctor d);
+    List<Appointment> findAppointmentsByDoctor(Doctor d);
+    Appointment findAppointmentByPatient(Patient p);
+    Appointment findAppointmentByDoctor(Doctor d);
     void deleteAppointmentByPatient(Patient p);
     void deleteAppointmentByDoctor(Doctor d);
 

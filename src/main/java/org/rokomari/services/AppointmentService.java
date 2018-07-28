@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,11 +30,11 @@ public class AppointmentService {
     }
 
     public List<Appointment> seeAllAppointments(Doctor d){
-        return repository.findAppointmenstByDoctor(d);
+        return repository.findAppointmentsByDoctor(d);
     }
 
     public List<Appointment> seeAppointmentsOfElderly(Doctor d){
-        List<Appointment> appointments = repository.findAppointmenstByDoctor(d);
+        List<Appointment> appointments = repository.findAppointmentsByDoctor(d);
 
         List<Appointment> appointmentsElderly = appointments
                                                 .stream()
@@ -50,6 +51,12 @@ public class AppointmentService {
     @Transactional
     public void cancelAppointmentByDoctor(Doctor d){
          repository.deleteAppointmentByDoctor(d);
+    }
+
+    public void updateAppointment(Doctor d, Patient p, LocalDateTime updatedTime){
+        Appointment appointment = repository.findAppointmentByPatientAndDoctor(p, d);
+        appointment.setAppointment(updatedTime);
+        repository.save(appointment);
     }
 
 }

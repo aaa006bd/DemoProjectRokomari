@@ -68,6 +68,12 @@ public class AssignResources {
         return doctor.getPatients();
     }
 
+    @GetMapping("api/patients/{patId}/doctors")
+    public Set<Doctor> getAllDoctorsVisitedByPatient(@PathVariable("patId") int patId){
+        Patient patient = patientService.getAPatientById(patId);
+        return patient.getDoctors();
+    }
+
     @PostMapping("api/appointment/doctor/patient/{appointment_time}")
     public ResponseEntity<StatusMessage> makeAnAppointment(@RequestHeader("doctor_id")int docId,
                                                            @RequestHeader("patient_id")int patId,
@@ -96,10 +102,37 @@ public class AssignResources {
         }
     }
 
+    @PostMapping("api/appointment/update/patient/{appointment_time}")
+    public ResponseEntity<StatusMessage> UpdateAppointment(@RequestHeader("doctor_id")int docId,
+                                                           @RequestHeader("patient_id")int patId,
+                                                           @PathVariable("appointment_time")
+                                                           @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss") LocalDateTime updatedTime){
+        try{
+
+            Patient patient = patientService.getAPatientById(patId);
+            Doctor doctor = doctorService.getADoctorById(docId);
+
+
+            appointmentService.updateAppointment(doctor, patient, updatedTime);
+
+
+            return ResponseEntity
+                    .ok()
+                    .body(new StatusMessage("time has been updated. new Appointment time: "
+                            +updatedTime.toLocalDate()+" "+updatedTime.toLocalTime()));
+        }catch (Exception e){
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new StatusMessage("could not update appointment record"));
+        }
+    }
+
     @GetMapping("api/appointment/patient/{id}")
     public List<Appointment> getAppointment(@PathVariable("id")int id){
         return appointmentService.findByPatient(patientService.getAPatientById(id));
     }
+
+
 
     @DeleteMapping("api/appointment/delete/patient/{id}")
     public ResponseEntity<StatusMessage> cancelAppointmentByPatient(@PathVariable("id") int id){
