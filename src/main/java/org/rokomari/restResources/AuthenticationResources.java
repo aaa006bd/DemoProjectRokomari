@@ -66,8 +66,10 @@ public class AuthenticationResources {
         User user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(
                 ()-> new UsernameNotFoundException("user with given email doesnot exists")
         );
+
         HttpHeaders header = new HttpHeaders();
         header.add("jwt_token","Bearer "+jwt);
+
         LoginResponse response = new LoginResponse();
         response.setStatus("logged_in");
         response.setFirstName(user.getFirstName());

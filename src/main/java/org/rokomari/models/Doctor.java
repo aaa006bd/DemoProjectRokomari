@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,11 +29,14 @@ public class Doctor {
     private int id;
 
     @Getter@Setter
+    @NotBlank
+    @NotBlank(message = "name is required")
     private String name;
 
     @Getter@Setter
     @Column(name = "dept")
     @JsonProperty("dept")
+    @NotBlank(message = "department is required")
     private String department;
 
     @Getter@Setter
@@ -41,7 +45,7 @@ public class Doctor {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate dateOfJoining;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.DETACH)
     @JoinTable(name = "doctor_patient" ,
                joinColumns = @JoinColumn(name = "doctor_id"),
                 inverseJoinColumns = @JoinColumn(name = "patient_id"))

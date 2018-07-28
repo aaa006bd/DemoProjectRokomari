@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,11 +31,13 @@ public class User {
     @Getter@Setter
     @Column(name = "first_name")
     @JsonProperty("first_name")
+    @NotBlank(message = "first name required")
     private String firstName;
 
     @Getter@Setter
     @Column(name = "last_name")
     @JsonProperty("last_name")
+    @NotBlank(message = "last name required")
     private String lastName;
 
     @Getter@Setter
@@ -44,12 +47,15 @@ public class User {
 
     @Getter@Setter
     @Email
+    @NotBlank(message = "email is required")
     private String email;
 
     @Getter@Setter
+    @NotBlank(message = "mobile number is required")
     private String mobile;
 
     @Getter@Setter
+    @NotBlank(message = "password is required")
     private String password;
 
     @Getter@Setter

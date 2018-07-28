@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,15 +29,19 @@ public class Patient {
     private int id;
 
     @Getter@Setter
+    @NotBlank
     private String name;
 
     @Getter@Setter
+    @NotBlank
     private int age;
 
     @Getter@Setter
+    @NotBlank
     private String mobile;
 
     @Getter@Setter
+    @NotBlank
     private String gender;
 
     @Getter@Setter
@@ -45,10 +50,11 @@ public class Patient {
     @Getter@Setter
     @Column(name = "symptom_summary")
     @JsonProperty("symptom_summary")
+    @NotBlank
     private String symptomSummary;
 
 
-    @ManyToMany(mappedBy = "patients")
+    @ManyToMany(mappedBy = "patients",cascade = CascadeType.DETACH)
     @Getter@Setter
     @JsonIgnore
     private Set<Doctor> doctors = new HashSet<>();
